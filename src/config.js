@@ -1,4 +1,4 @@
-var ApiUrl="http://localhost:5000";
+var ApiUrl="https://localhost:5001";
 
 export {
     ApiUrl

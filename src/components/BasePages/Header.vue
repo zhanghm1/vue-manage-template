@@ -4,11 +4,15 @@
             <el-radio-button :label="false">展开</el-radio-button>
             <el-radio-button :label="true">收起</el-radio-button>
         </el-radio-group>
+        <div class="loginout" @click="loginOut">
+            退出
+        </div>
     </div>
 </template>
 
 <script>
 import bus from '../../common/bus';
+import {localStorageCommon} from '../../common/Server';
 export default {
     data(){
         return {
@@ -18,6 +22,10 @@ export default {
     methods:{
         collapseChange(){
             bus.$emit("menuIsCollapse",this.isCollapse);
+        },
+        loginOut(){
+            localStorageCommon.setLoginOutItem();
+            this.$router.push("/login");
         }
     },
     created(){
@@ -42,5 +50,16 @@ export default {
     margin: 15px 0;
     position: absolute;
     left: 20px;
+}
+.loginout{
+    float: right;
+    right: 50px;
+    font-size: 14px;
+    margin-right: 20px;
+    margin-top: 22px;
+    cursor: pointer;
+}
+.loginout :hover{
+    color: aqua;
 }
 </style>

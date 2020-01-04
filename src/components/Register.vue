@@ -9,7 +9,6 @@
 
 <script>
 import Request from '../common/Request';
-import qs from 'qs';
 export default {
   name: 'Login',
   data() {
@@ -20,12 +19,17 @@ export default {
     },
   methods:{
     Register:function(){
-      Request.post('/api/identityserver4/Register',
+      Request.post('/api/user/Register',
         {
           UserName:this.UserName,
           Password:this.Password
         }).then(resp=>{
-          qs.stringify({});
+          if(resp.Code=="SUCCESS"){
+            this.$alert("注册成功");
+          }else{
+            this.$alert("注册失败");
+          }
+          
           window.console.log(resp);
       }).catch(a=>{
         window.console.log(a);

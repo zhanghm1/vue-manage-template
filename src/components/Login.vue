@@ -34,11 +34,7 @@ export default {
         .then(resp=>{
           window.console.log(resp);
           //登录之后会保存token
-          localStorageCommon.setItem("access_token",resp.access_token);
-          localStorageCommon.setItem("UserPermission",resp.UserPermission); //"user_list", "user_edit", "systemuser"
-          localStorageCommon.setItem("UserId",resp.UserId);
-          localStorageCommon.setItem("UserName",resp.UserName);
-          localStorageCommon.setItem("token_type",resp.token_type);
+          localStorageCommon.setLoginItem(resp);
           this.$router.push("/");
           
       }).catch(a=>{
@@ -46,7 +42,7 @@ export default {
       });
     },
     GetInfo(){
-      Request.get('/api/identityserver4/Info').then(resp=>{
+      Request.get('/api/user/Info').then(resp=>{
           window.console.log(localStorageCommon);
           
         window.console.log(resp);
