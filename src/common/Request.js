@@ -11,6 +11,8 @@ service.interceptors.request.use(
     config => {
         let access_token= localStorageCommon.getItem("access_token");
         let token_type= localStorageCommon.getItem("token_type");
+        //重定向需要添加此请求头标识是ajax 请求
+        config.headers['X-Requested-With'] = `XMLHttpRequest`;
         if(access_token){
             config.headers['Authorization'] = `${token_type} ${access_token}`;
         }

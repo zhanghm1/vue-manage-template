@@ -1,6 +1,7 @@
 <template>
   <div class="Login">
-    <el-input v-model="UserName" placeholder="请输入内容"></el-input>
+    <el-input v-model="Name" placeholder="请输入名称"></el-input>
+    <el-input v-model="UserName" placeholder="请输入用户名"></el-input>
     <el-input v-model="Password" placeholder="请输入密码" show-password></el-input>
     <el-button type="primary" @click="Register()">注册</el-button>
      
@@ -14,7 +15,8 @@ export default {
   data() {
         return {
             UserName:"zhanghm01",
-            Password:"Admin123456!"
+            Password:"Admin123456!",
+            Name:"zhm"
         };
     },
   methods:{
@@ -22,7 +24,8 @@ export default {
       Request.post('/api/user/Register',
         {
           UserName:this.UserName,
-          Password:this.Password
+          Password:this.Password,
+          Name:this.Name
         }).then(resp=>{
           if(resp.Code=="SUCCESS"){
             this.$alert("注册成功");

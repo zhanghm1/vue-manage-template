@@ -1,12 +1,17 @@
 <template>
-  <div class="Login">
-    <el-input v-model="UserName" placeholder="请输入内容"></el-input>
-    <el-input v-model="Password" placeholder="请输入密码" show-password></el-input>
-    <el-button type="primary" @click="submit()">登陆</el-button>
+  <el-row :gutter="20">
+    
+    <el-col :span="12" :offset="6">
+      <div class="grid-content bg-purple">
+        <el-input v-model="UserName" placeholder="请输入内容"></el-input>
+        <el-input v-model="Password" placeholder="请输入密码" show-password></el-input>
+        <el-button type="primary" @click="submit()">登陆</el-button>
 
-    <el-button type="primary" @click="GetInfo()">获取信息</el-button>
-    <router-link to='/Register'>去注册</router-link>
-  </div>
+        <el-button type="primary" @click="GetInfo()">获取信息</el-button>
+        <router-link to='/Register'>去注册</router-link>
+      </div>
+      </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -17,7 +22,7 @@ export default {
   name: 'Login',
   data() {
         return {
-            UserName:"zhanghm01",
+            UserName:"admin",
             Password:"Admin123456!"
         };
     },
