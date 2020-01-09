@@ -1,8 +1,8 @@
 <template>
     <div class="tabs-list">
         <div class="tabs-item" v-for="(item,index) in tabList" :class="{'active':isActive(item)}" :key="item.index">
-            <router-link :to="item.index" class="tags-li-title">
-                    {{item.title}}
+            <router-link :to="item.link" class="tags-li-title">
+                    {{item.Name}}
                 </router-link>
             <span class="tags-item-close" @click="closeTab(index)"><i class="el-icon-close"></i></span>
         </div>
@@ -22,8 +22,8 @@ export default {
     },
     methods:{
         isActive(item) {
-                if(item.index === this.$route.path) {
-                    this.ActiveIndex=item.index;
+                if(item.link === this.$route.path) {
+                    this.ActiveIndex=item.link;
                     return true;
                 }
                 return false;
@@ -36,11 +36,11 @@ export default {
             //新的数组中找当前，没有就找前一个
             const item = this.tabList[index] ? this.tabList[index] : this.tabList[index - 1];
             if (item) {
-                if(delItem.index==this.ActiveIndex){//只有关闭自己的时候才需要跳转
-                    this.$router.push(item.index);
+                if(delItem.link==this.link){//只有关闭自己的时候才需要跳转
+                    this.$router.push(item.link);
                 }
             }else{
-                if(delItem.index!= '/index'){
+                if(delItem.link!= '/index'){
                     this.$router.push('/');
                 }
             }
@@ -49,11 +49,11 @@ export default {
         addTab(router){
            
             let hasExist = this.tabList.some(item => {
-                return item.index === router.path;
+                return item.link === router.path;
             });
             if(!hasExist){
                 bus.$emit('tabsChange', this.tabList);
-                this.tabList.push({index:router.path,title:router.meta.title});
+                this.tabList.push({link:router.path,Name:router.meta.title});
             }
             
         },
@@ -65,16 +65,16 @@ export default {
             }
         },
      created(){
-            window.console.log('tabs_created');
-            
+           // window.console.log('tabs_created');
+             this.addTab(this.$route,null);
      },
-     beforeMount(){
-         window.console.log('tabs_beforeMount');
-         this.$nextTick(function () {
-            this.addTab(this.$route,null);
-        })
+    //  beforeMount(){
+    //     // window.console.log('tabs_beforeMount');
+    //      this.$nextTick(function () {
+           
+    //     })
        
-     }
+    //  }
 
 }
 </script>

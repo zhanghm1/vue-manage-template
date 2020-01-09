@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Request from '../../common/Request';
+import axios from '../../common/Request';
 import bus from '../../common/bus';
 import {localStorageCommon} from '../../common/Server';
 export default {
@@ -39,24 +39,23 @@ export default {
         },
         GetInfo(){
            
-            Request.get('/api/user/Info').then(resp=>{
-                window.console.log(localStorageCommon);
+            axios.get('/api/user/Info').then(resp=>{
                 if(resp.Code=="SUCCESS"){
                     this.CurrentUser.Name=resp.Data.Name;
                     this.CurrentUser.UserName=resp.Data.UserName;
                     this.CurrentUser.Id=resp.Data.Id;
 
                 }
-                window.console.log(resp);
-                window.console.log(this);
             }).catch(a=>{
-                window.console.log(a);
+                window.console.error(a);
             });
-        }
+        },
+
     },
     created(){
         this.collapseChange();
         this.GetInfo();
+        
     }
 }
 </script>

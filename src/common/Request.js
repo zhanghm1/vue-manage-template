@@ -1,3 +1,5 @@
+import Vue from 'vue';
+import router from '../router';
 import axios from 'axios';
 import {ApiUrl} from '../config';
 import {localStorageCommon} from '../common/Server';
@@ -13,6 +15,10 @@ service.interceptors.request.use(
         let token_type= localStorageCommon.getItem("token_type");
         //重定向需要添加此请求头标识是ajax 请求
         config.headers['X-Requested-With'] = `XMLHttpRequest`;
+        // 标识地区
+        config.headers['Content-Language'] = `zh-cn`;
+
+        
         if(access_token){
             config.headers['Authorization'] = `${token_type} ${access_token}`;
         }
@@ -20,21 +26,29 @@ service.interceptors.request.use(
     },
     error => {
         window.console.log(error);
+        
         return Promise.reject();
     }
 );
 
 service.interceptors.response.use(
     response => {
-        window.console.log(response);
         if (response.status === 200) {
             return response.data;
-        } else {
+        }else {
             Promise.reject();
         }
     },
-    error => {
-        window.console.log(error);
+    error=> {
+        window.console.log("response——error",error);
+        if (error.response.status === 401) {
+
+            //提示没有权限
+            Vue.prototype.$alert('未识别到您的登录', '登录', {
+                confirmButtonText: '确定'
+            });
+            router.push("/login");
+        }
         return Promise.reject();
     }
 );

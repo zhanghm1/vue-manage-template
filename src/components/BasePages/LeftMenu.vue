@@ -12,26 +12,32 @@
         unique-opened
         router
         >
-            <template  v-for="item in lists">
-                <template v-if="item.childs &&item.childs.length>0">
-                    <el-submenu :index="item.index" :key="item.id">
+            <template  v-for="item in menus">
+                <template v-if="item.Childs && item.IsMenu && item.IsPremission && item.Childs.length>0">
+                    <el-submenu :index="item.link" :key="item.Id">
                         <template slot="title">
                             <div  >
                             <i class="el-icon-location"></i>
-                            <span class="el-submenu_title" slot="title">{{item.title}}</span>
+                            <span class="el-submenu_title" slot="title">{{item.Name}}</span>
                             </div>
                         </template>
-                        <el-menu-item  class="el-submenu_title-dateil"  
-                        v-for="itemchild in item.childs"  
-                        :data-index="itemchild.index"
-                        :index="itemchild.index" 
-                        :key="itemchild.id" >{{itemchild.title}}</el-menu-item>
+                        <template  v-for="itemchild in item.Childs" >
+                            <el-menu-item  class="el-submenu_title-dateil" 
+                            :data-index="itemchild.link"
+                            :index="itemchild.link" 
+                            :key="itemchild.Id" 
+                            v-if="itemchild.IsMenu && itemchild.IsPremission" 
+                            >
+                            {{itemchild.Name}}
+                            </el-menu-item>
+                        </template>
+                        
                     </el-submenu>
                 </template>
                 <template  v-else>
-                    <el-menu-item class="el-submenu_title"  :index="item.index" :key="item.id">
+                    <el-menu-item class="el-submenu_title" v-if="item.IsMenu && item.IsPremission"  :index="item.link" :key="item.Id">
                         <i class="el-icon-location"></i>
-                        <span slot="title">{{ item.title }}</span>
+                        <span slot="title">{{ item.Name }}</span>
                     </el-menu-item>
                 </template>
             </template>
@@ -40,38 +46,61 @@
 </template>
 
 <script>
-    var lists=[
-        {id:1, title:"主页",index:"/index",ioc:"index",childs:null},
-        {id:2,title:"用户管理",index:"user",ioc:"user",childs:[
-                {id:21,title:"用户列表",index:"/user",ioc:null},
-                {id:22,title:"用户编辑",index:"/user/edit",ioc:null,childs:null},
-            ]
-        },
-        {id:3,title:"系统管理",index:"system",ioc:"system",childs:[
-                {id:31,title:"系统用户",index:"/system/systemuser",ioc:null,childs:null},
-                {id:42,title:"系统角色",index:"/system/systemrule",ioc:null,childs:null},
-            ]
-        },
-    
-    ];
+
 import bus from '../../common/bus';
+import axios from '../../common/Request';
+import {leftMenu} from '../../config';
+import {localStorageCommon} from '../../common/Server';
 export default {
     data() {
       return {
         isCollapse: false,
-        lists:lists,
+        menus:leftMenu,
         tabsItem:""
       };
     },
     methods: {
-      handleOpen(key, keyPath) {
+        handleOpen(key, keyPath) {
 
-        window.console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-         window.console.log(key, keyPath);
-      },
-      
+            window.console.log(key, keyPath);
+        },
+        handleClose(key, keyPath) {
+            window.console.log(key, keyPath);
+        },
+        GetUserPermissions(){
+            axios.get('/api/user/UserPermissions').then(resp=>{
+                if(resp.Code=="SUCCESS"){
+                    // 路由权限
+                    localStorageCommon.setItem("UserPermission",JSON.stringify(resp.Data));
+                    //菜单栏权限
+                    this.UpdatePremission(this.menus,  resp.Data);
+                }
+            }).catch(a=>{
+                window.console.error(a);
+            });
+        },
+        UpdatePremission(menus,userPremission){
+            menus.forEach(a=>{
+                
+                let premissions = userPremission.filter(p=>p.Code==a.Code);
+                if(!a.needPremission){
+                    a.IsPremission=true;
+                }else{
+                    if(premissions.length>0 ){
+                        a.IsPremission=true;
+                        if(!a.Childs){
+                            return;
+                        }
+                        this.UpdatePremission(a.Childs,premissions[0].Childs);
+                    }else{
+                        return;
+                    }
+                }
+                
+            });
+
+            
+        }
     },
     computed: {
         onRoutes() {
@@ -84,6 +113,7 @@ export default {
             window.console.log('menuIsCollapse',msg);
             this.isCollapse = msg;
         });
+        this.GetUserPermissions();
        
     }
   }

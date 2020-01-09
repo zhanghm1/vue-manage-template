@@ -60,7 +60,7 @@ const routes = [
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title}`;
-    let useurPermission = localStorageCommon.getItem("UserPermission");
+    let useurPermissionStr = localStorageCommon.getItem("UserPermission") ;
     let access_token = localStorageCommon.getItem("access_token");
     let path=to.path.toLowerCase();
 
@@ -73,24 +73,18 @@ router.beforeEach((to, from, next) => {
         next();
         return;
     } else{
-        if(!useurPermission){
+        if(!useurPermissionStr){
             hasPermission=false;
         }
         else{
             if(!to.meta.permission){
                 hasPermission=true;
             }else{
+                let useurPermission =JSON.parse(localStorageCommon.getItem("UserPermission")) ;
                 let permission=to.meta.permission.toLowerCase();
-           
-                let useurPermissionArr=useurPermission.toLowerCase().split(',');
-                if (useurPermissionArr.indexOf(permission)==-1) {
-                    hasPermission=false;
-                }else {
-                    hasPermission=true;
-                }
+                window.console.log(permission);
+                hasPermission = useurPermissionSearch(useurPermission,permission);
             }
-
-            
         }
     }  
 
@@ -104,6 +98,25 @@ router.beforeEach((to, from, next) => {
     }
     
 });
+
+function useurPermissionSearch(useurPermission,code){
+    let IsHavs=false;
+    for (let index = 0; index < useurPermission.length; index++) {
+        const element = useurPermission[index];
+        if(element.Code==code){
+            IsHavs = true;
+            break;
+        }else{
+            if(element.Childs){
+                IsHavs = useurPermissionSearch(element.Childs,code);
+                if(IsHavs){
+                    break;
+                }
+            }
+        }
+    }
+    return IsHavs;
+}
   export default router;
 
 

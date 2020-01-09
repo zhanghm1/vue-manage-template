@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Request from '../common/Request';
+import axios from '../common/Request';
 import {localStorageCommon} from '../common/Server';
 import qs from 'qs';
 export default {
@@ -28,7 +28,7 @@ export default {
     },
   methods:{
     submit:function(){
-      Request.post('/connect/token',qs.stringify({
+      axios.post('/connect/token',qs.stringify({
           grant_type:"password",
           client_id:"passwordclient",
           client_secret:"secret",
