@@ -4,10 +4,8 @@ import axios from 'axios';
 import {ApiUrl} from '../config/config';
 import {localStorageCommon} from '../common/Server';
 const service = axios.create({
-    // process.env.NODE_ENV === 'development' //来判断是否开发环境
-    // easy-mock服务挂了，暂时不使用了
     baseURL: ApiUrl,
-    timeout: 5000
+    timeout: 30000
 });
 service.interceptors.request.use(
     config => {

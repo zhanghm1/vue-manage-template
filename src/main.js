@@ -14,13 +14,12 @@ Vue.use(VueI18n);
 Vue.use(ElementUI);
 
 
-
-var contentLanguage = localStorage.getItem("ContentLanguage");
-window.console.log("contentLanguage",contentLanguage);
-if(contentLanguage=="undefined" || contentLanguage=="null" ||contentLanguage=='' || contentLanguage==undefined || contentLanguage==null){
+//初始化设置语言
+var contentLanguage = localStorageCommon.getItem("ContentLanguage");
+if(contentLanguage){
   contentLanguage='zh-cn';
   window.console.log("contentLanguage",contentLanguage);
-  localStorage.setItem("ContentLanguage",'zh-cn');
+  localStorageCommon.setItem("ContentLanguage",contentLanguage);
 }
 
 

@@ -1,6 +1,10 @@
 var localStorageCommon ={
     getItem:function(key){
-        return localStorage.getItem(key);
+        let vaule = localStorage.getItem(key);
+        if(vaule=="undefined" || vaule=="null" || vaule==undefined || vaule==null){
+            return null;
+        }
+        return  vaule;
     },
     setItem:function(key,value){
         localStorage.setItem(key,value);
