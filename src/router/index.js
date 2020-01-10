@@ -1,52 +1,51 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import {localStorageCommon} from '../common/Server';
+
 
 Vue.use(Router);
 
 const routes = [
-
     {
         path: '/',
         component: () => import('../components/BasePages/Home.vue'),
         redirect: '/index',
-        meta: { title: '首页', permission: "index" },
+        meta: { title: '首页',code:'Home'},
         children: [
             {
                 path: '/index',
-                component: () => import('../components/Index.vue'),
-                meta: { title: '首页' }
+                component: () => import('../pages/Index.vue'),
+                meta: { title: '首页',code:'Home' }
             },
             {
                 path: '/user',
-                component: () => import('../components/UserManage/UserList.vue'),
-                meta: { title: '用户列表', permission: "user_list" }
+                component: () => import('../pages/UserManage/UserList.vue'),
+                meta: { title: '用户列表',code:'user_list', permission: "user_list" }
             },
             {
                 path: '/user/edit',
-                component: () => import('../components/UserManage/UserEdit.vue'),
-                meta: { title: '用户编辑', permission: "user_edit" }
+                component: () => import('../pages/UserManage/UserEdit.vue'),
+                meta: { title: '用户编辑', code:'user_edit',permission: "user_edit" }
             },
             {
                 path: '/system/systemuser',
-                component: () => import('../components/SystemManage/SystemUser.vue'),
-                meta: { title: '系统用户', permission: "systemuser" }
+                component: () => import('../pages/SystemManage/SystemUser.vue'),
+                meta: { title: '系统用户',code:'systemuser', permission: "systemuser" }
             },
             {
-                path: '/system/systemrule',
-                component: () => import('../components/SystemManage/SystemRule.vue'),
-                meta: { title: '系统角色', permission: "systemrule" }
+                path: '/system/systemrole',
+                component: () => import('../pages/SystemManage/SystemRole.vue'),
+                meta: { title: '系统角色',code:'systemrole', permission: "systemrole" }
             },
         ]
     },
     {
         path: '/Login',
-        component: () => import('../components/Login.vue'),
+        component: () => import('../pages/Login.vue'),
     }
     ,
     {
         path: '/Register',
-        component: () => import('../components/Register.vue'),
+        component: () => import('../pages/Register.vue'),
     }
 
 ];
@@ -57,66 +56,7 @@ const routes = [
     routes: routes
   });
 
-//使用钩子函数对路由进行权限跳转
-router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title}`;
-    let useurPermissionStr = localStorageCommon.getItem("UserPermission") ;
-    let access_token = localStorageCommon.getItem("access_token");
-    let path=to.path.toLowerCase();
 
-    let hasPermission=false;
-
-    if(!access_token && path != '/login' && path != '/register'){
-        next('/login');
-        return;
-    } else if( path == '/login' || path == '/register'){
-        next();
-        return;
-    } else{
-        if(!useurPermissionStr){
-            hasPermission=false;
-        }
-        else{
-            if(!to.meta.permission){
-                hasPermission=true;
-            }else{
-                let useurPermission =JSON.parse(localStorageCommon.getItem("UserPermission")) ;
-                let permission=to.meta.permission.toLowerCase();
-                window.console.log(permission);
-                hasPermission = useurPermissionSearch(useurPermission,permission);
-            }
-        }
-    }  
-
-    if(hasPermission){
-        next();
-    }else{
-        //提示没有权限
-        Vue.prototype.$alert('您没有权限访问,请联系管理员1', '权限', {
-            confirmButtonText: '确定'
-        });
-    }
-    
-});
-
-function useurPermissionSearch(useurPermission,code){
-    let IsHavs=false;
-    for (let index = 0; index < useurPermission.length; index++) {
-        const element = useurPermission[index];
-        if(element.Code==code){
-            IsHavs = true;
-            break;
-        }else{
-            if(element.Childs){
-                IsHavs = useurPermissionSearch(element.Childs,code);
-                if(IsHavs){
-                    break;
-                }
-            }
-        }
-    }
-    return IsHavs;
-}
   export default router;
 
 

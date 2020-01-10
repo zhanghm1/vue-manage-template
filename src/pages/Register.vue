@@ -3,13 +3,13 @@
     <el-input v-model="Name" placeholder="请输入名称"></el-input>
     <el-input v-model="UserName" placeholder="请输入用户名"></el-input>
     <el-input v-model="Password" placeholder="请输入密码" show-password></el-input>
-    <el-button type="primary" @click="Register()">注册</el-button>
+    <el-button type="primary" @click="Onsubmit()">注册</el-button>
      
   </div>
 </template>
 
 <script>
-import Request from '../common/Request';
+import {Register} from '../requestData/user';
 export default {
   name: 'Login',
   data() {
@@ -20,17 +20,17 @@ export default {
         };
     },
   methods:{
-    Register:function(){
-      Request.post('/api/user/Register',
-        {
+    Onsubmit:function(){
+      Register({
           UserName:this.UserName,
           Password:this.Password,
           Name:this.Name
         }).then(resp=>{
           if(resp.Code=="SUCCESS"){
-            this.$alert("注册成功");
+            this.$router.push('/');
+            //this.$alert(resp.Message);
           }else{
-            this.$alert("注册失败");
+            this.$alert(resp.Message);
           }
           
           window.console.log(resp);

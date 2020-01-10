@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import router from '../router';
+// import router from '../router';
 import axios from 'axios';
-import {ApiUrl} from '../config';
+import {ApiUrl} from '../config/config';
 import {localStorageCommon} from '../common/Server';
 const service = axios.create({
     // process.env.NODE_ENV === 'development' //来判断是否开发环境
@@ -16,7 +16,8 @@ service.interceptors.request.use(
         //重定向需要添加此请求头标识是ajax 请求
         config.headers['X-Requested-With'] = `XMLHttpRequest`;
         // 标识地区
-        config.headers['Content-Language'] = `zh-cn`;
+        //localStorageCommon.setItem("ContentLanguage");
+        config.headers['Content-Language'] = localStorageCommon.getItem("ContentLanguage");
 
         
         if(access_token){
@@ -43,11 +44,12 @@ service.interceptors.response.use(
         window.console.log("response——error",error);
         if (error.response.status === 401) {
 
-            //提示没有权限
-            Vue.prototype.$alert('未识别到您的登录', '登录', {
+            //提示没有授权  
+            //可能是没有登录或者用户没有接口的访问权限
+            Vue.prototype.$alert('未经授权的请求', '授权', {
                 confirmButtonText: '确定'
             });
-            router.push("/login");
+            //router.push("/login");
         }
         return Promise.reject();
     }

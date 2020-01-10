@@ -8,16 +8,10 @@ var localStorageCommon ={
     },
     setLoginItem(resp){
         localStorageCommon.setItem("access_token",resp.access_token);
-        localStorageCommon.setItem("UserPermission",resp.UserPermission);
-        localStorageCommon.setItem("UserId",resp.UserId);
-        localStorageCommon.setItem("UserName",resp.UserName);
         localStorageCommon.setItem("token_type",resp.token_type);
     },
     setLoginOutItem(){
         localStorageCommon.setItem("access_token",null);
-        localStorageCommon.setItem("UserPermission",null);
-        localStorageCommon.setItem("UserId",null);
-        localStorageCommon.setItem("UserName",null);
         localStorageCommon.setItem("token_type",null);
     }
 }

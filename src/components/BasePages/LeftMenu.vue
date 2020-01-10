@@ -48,18 +48,30 @@
 <script>
 
 import bus from '../../common/bus';
-import axios from '../../common/Request';
-import {leftMenu} from '../../config';
-import {localStorageCommon} from '../../common/Server';
+import Menus from '../../config/menus/menus';
+import {mapState,mapMutations} from 'vuex'
+import {GetUserPermissions} from '../../requestData/user';
 export default {
     data() {
       return {
         isCollapse: false,
-        menus:leftMenu,
-        tabsItem:""
+        menus:[],
+        tabsItem:"",
+
       };
     },
-    methods: {
+    computed: {
+            ...mapState([
+                'UserPermission'
+            ]),
+            onRoutes() {
+            return this.$route.path;
+        }
+    },
+    methods:{
+            ...mapMutations([
+                'SaveUserPermission'
+            ]),
         handleOpen(key, keyPath) {
 
             window.console.log(key, keyPath);
@@ -67,21 +79,24 @@ export default {
         handleClose(key, keyPath) {
             window.console.log(key, keyPath);
         },
-        GetUserPermissions(){
-            axios.get('/api/user/UserPermissions').then(resp=>{
+        GetPermissions(){
+            GetUserPermissions().then(resp=>{
                 if(resp.Code=="SUCCESS"){
-                    // 路由权限
-                    localStorageCommon.setItem("UserPermission",JSON.stringify(resp.Data));
-                    //菜单栏权限
-                    this.UpdatePremission(this.menus,  resp.Data);
+                    // 保存到store
+                    this.SaveUserPermission(resp.Data);
+                    //window.console.log('leftmenu_',this.UserPermission);
+                    this.UpdatePremission(this.menus,this.UserPermission)
                 }
             }).catch(a=>{
                 window.console.error(a);
             });
         },
+        // 根据权限匹配导航栏
         UpdatePremission(menus,userPremission){
+            if(userPremission==null||userPremission==undefined||userPremission.length==0){
+                return;
+            }
             menus.forEach(a=>{
-                
                 let premissions = userPremission.filter(p=>p.Code==a.Code);
                 if(!a.needPremission){
                     a.IsPremission=true;
@@ -96,15 +111,7 @@ export default {
                         return;
                     }
                 }
-                
             });
-
-            
-        }
-    },
-    computed: {
-        onRoutes() {
-            return this.$route.path;
         }
     },
     created() {
@@ -113,7 +120,18 @@ export default {
             window.console.log('menuIsCollapse',msg);
             this.isCollapse = msg;
         });
-        this.GetUserPermissions();
+        // 切换菜单文字的语言
+        bus.$on('languageChange', msg => {
+            window.console.log('languageChange',msg);
+            this.menus = Menus[msg];
+            this.GetPermissions();
+        });
+        
+        let ContentLanguage = this.$i18n.locale;
+        this.menus = Menus[ContentLanguage];
+
+        this.GetPermissions();
+        
        
     }
   }

@@ -2,12 +2,11 @@
     <div class="tabs-list">
         <div class="tabs-item" v-for="(item,index) in tabList" :class="{'active':isActive(item)}" :key="item.index">
             <router-link :to="item.link" class="tags-li-title">
-                    {{item.Name}}
+                    {{$t('router.'+item.code)}}
                 </router-link>
             <span class="tags-item-close" @click="closeTab(index)"><i class="el-icon-close"></i></span>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -16,30 +15,28 @@ export default {
     data(){
         return {
             tabList:[],
-            ActiveIndex:""
-
+            ActiveLink:""
         }
     },
     methods:{
         isActive(item) {
                 if(item.link === this.$route.path) {
-                    this.ActiveIndex=item.link;
+                    this.ActiveLink=item.link;
                     return true;
                 }
                 return false;
             },
         closeTab(index){
             //如果home页keep-alive有缓存，那么还是需要更新 keep-alive，这里没做
-
             let delItem = this.tabList.splice(index, 1)[0];
 
             //新的数组中找当前，没有就找前一个
             const item = this.tabList[index] ? this.tabList[index] : this.tabList[index - 1];
             if (item) {
-                if(delItem.link==this.link){//只有关闭自己的时候才需要跳转
+                if(delItem.link==this.ActiveLink){//只有关闭自己的时候才需要跳转
                     this.$router.push(item.link);
                 }
-            }else{
+            }else{//没有导航页了就到首页
                 if(delItem.link!= '/index'){
                     this.$router.push('/');
                 }
@@ -53,9 +50,8 @@ export default {
             });
             if(!hasExist){
                 bus.$emit('tabsChange', this.tabList);
-                this.tabList.push({link:router.path,Name:router.meta.title});
+                this.tabList.push({link:router.path,code:router.meta.code});
             }
-            
         },
 
     },
