@@ -16,7 +16,7 @@ Vue.use(ElementUI);
 
 //初始化设置语言
 var contentLanguage = localStorageCommon.getItem("ContentLanguage");
-if(contentLanguage){
+if(!contentLanguage){
   contentLanguage='zh-cn';
   window.console.log("contentLanguage",contentLanguage);
   localStorageCommon.setItem("ContentLanguage",contentLanguage);
