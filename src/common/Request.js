@@ -1,5 +1,5 @@
 import Vue from 'vue';
-// import router from '../router';
+ import router from '../router';
 import axios from 'axios';
 import {ApiUrl} from '../config/config';
 import {localStorageCommon} from '../common/Server';
@@ -39,15 +39,25 @@ service.interceptors.response.use(
         }
     },
     error=> {
-        window.console.log("response——error",error);
+        
         if (error.response.status === 401) {
-
-            //提示没有授权  
-            //可能是没有登录或者用户没有接口的访问权限
-            Vue.prototype.$alert('未经授权的请求', '授权', {
-                confirmButtonText: '确定'
-            });
-            //router.push("/login");
+            window.console.log("response--error--data",error.response);
+            if(error.response.data.Code=='Unauthorized'){
+                Vue.prototype.$msgbox({
+                    type: 'info',
+                    message: error.response.data.Message
+                });
+                // 登陆无效
+                //window.location.href='#/login'
+                router.push("/login");
+            }else if(error.response.data.Code=='NotApiAccess'){
+                //可能是没有登录或者用户没有接口的访问权限
+                Vue.prototype.$msgbox({
+                    type: 'info',
+                    message: error.response.data.Message
+                  });
+                //Vue.prototype.$alert(error.response.data.Message);
+            }
         }
         return Promise.reject();
     }

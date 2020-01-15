@@ -57,6 +57,7 @@ export default {
         isCollapse: false,
         menus:[],
         tabsItem:"",
+        ContentLanguage:''
 
       };
     },
@@ -84,8 +85,15 @@ export default {
                 if(resp.Code=="SUCCESS"){
                     // 保存到store
                     this.SaveUserPermission(resp.Data);
-                    //window.console.log('leftmenu_',this.UserPermission);
+                    this.ContentLanguage = this.$i18n.locale;
+                    // 重新序列化对象，保证每次都是获取原始值；
+                    // 如果直接使用原始值，在UpdatePremission执行是会改变原始值对象，再次更新的时候就会有问题；
+                    this.menus =JSON.parse(JSON.stringify(Menus[this.ContentLanguage])) ;
+                    
+                    window.console.log('leftmenu_',this);
+
                     this.UpdatePremission(this.menus,this.UserPermission)
+                    
                 }
             }).catch(a=>{
                 window.console.error(a);
@@ -123,12 +131,14 @@ export default {
         // 切换菜单文字的语言
         bus.$on('languageChange', msg => {
             window.console.log('languageChange',msg);
-            this.menus = Menus[msg];
             this.GetPermissions();
         });
+        // 修改角色权限是更新菜单栏
+        bus.$on('changeRolePermissions', msg => {
+            this.GetPermissions(msg);
+        });
         
-        let ContentLanguage = this.$i18n.locale;
-        this.menus = Menus[ContentLanguage];
+        
 
         this.GetPermissions();
         

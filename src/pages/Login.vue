@@ -36,11 +36,11 @@ export default {
     submit:function(){
       Login({
           grant_type:"password",
-          client_id:"passwordclient",
+          client_id:"manage_web",
           client_secret:"secret",
           username:this.UserName,
           password:this.Password,
-          scope:"api1"
+          scope:"manage_api"
         })
       .then(resp=>{
           //window.console.log(resp);

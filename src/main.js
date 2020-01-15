@@ -61,13 +61,13 @@ router.beforeEach((to, from, next) => {
       next();
       return;
   } else{
-    if(!to.meta.permission){
+    if(!to.meta.needPremission){
       hasPermission=true;
     }else{
       if(!useurPermission){
         hasPermission=false;
       }else{
-              let permission=to.meta.permission.toLowerCase();
+              let permission=to.meta.code.toLowerCase();
               //window.console.log(permission);
               hasPermission = useurPermissionSearch(useurPermission,permission);
       }

@@ -17,35 +17,28 @@ const routes = [
                 meta: { title: '首页',code:'Home' }
             },
             {
-                path: '/user',
-                component: () => import('../pages/UserManage/UserList.vue'),
-                meta: { title: '用户列表',code:'user_list', permission: "user_list" }
+                path: '/system/user',
+                component: () => import('../pages/SystemManage/UserList.vue'),
+                meta: { title: '用户列表',code:'system_user_list', needPremission: true }
             },
             {
-                path: '/user/edit',
-                component: () => import('../pages/UserManage/UserEdit.vue'),
-                meta: { title: '用户编辑', code:'user_edit',permission: "user_edit" }
-            },
-            {
-                path: '/system/systemuser',
-                component: () => import('../pages/SystemManage/SystemUser.vue'),
-                meta: { title: '系统用户',code:'systemuser', permission: "systemuser" }
-            },
-            {
-                path: '/system/systemrole',
+                path: '/system/role',
                 component: () => import('../pages/SystemManage/SystemRole.vue'),
-                meta: { title: '系统角色',code:'systemrole', permission: "systemrole" }
+                meta: { title: '系统角色',code:'system_role_list', needPremission: true }
             },
         ]
     },
     {
         path: '/Login',
         component: () => import('../pages/Login.vue'),
-    }
-    ,
+    },
     {
         path: '/Register',
         component: () => import('../pages/Register.vue'),
+    },
+    {
+        path: '/test',
+        component: () => import('../pages/test.vue'),
     }
 
 ];
