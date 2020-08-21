@@ -1,4 +1,8 @@
 # vue-manage-template
+<a HREF="https://996.icu" >
+  <IMG  SRC="https://img.shields.io/badge/link-996.icu-red.svg" ALT="996.icu" />
+</a>
+
 vue.js 的管理模板，灵感来源于     https://github.com/lin-xin/vue-manage-system
 
 vue + ElementUI + vue router + vuex + i18n
